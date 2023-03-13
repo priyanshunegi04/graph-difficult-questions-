@@ -1,4 +1,6 @@
 // Function to return Breadth First Traversal of given graph.
+//space complexity---->o(n);
+//time complexity------>O(n) + O(2Edges);
     vector<int> bfsOfGraph(int V, vector<int> adj[]) {
     
     int vis[V] = {0};
