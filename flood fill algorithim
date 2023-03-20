@@ -1,0 +1,29 @@
+class Solution {
+public:
+    //---->time complexiy-->O(m*n)
+    //----->space complexity-->o(m*n);
+    void dfs(int row, int col, vector<vector<int>>& image, int inicolor, int delrow[], int delcol[], vector<vector<int>>&ans, int newcolor){
+        
+      ans[row][col] = newcolor; 
+      int n = image.size();
+      int m = image[0].size();
+        
+        for(int i = 0; i<4; i++){
+         int nrow = row + delrow[i];      
+         int mcol = col + delcol[i];
+           
+            if(nrow>=0 && nrow<n && mcol >=0 && mcol<m &&
+              image[nrow][mcol]==inicolor && ans[nrow][mcol] !=newcolor ){
+                dfs(nrow, mcol, image, inicolor, delrow, delcol, ans, newcolor);
+            }
+       } 
+    }
+    vector<vector<int>> floodFill(vector<vector<int>>& image, int sr, int sc, int color) {
+        vector<vector<int>>ans = image;
+        int inicolor = image[sr][sc];
+        int delrow[] = {-1, 0, 1, 0};
+        int delcol[] = {0, 1, 0, -1};
+        dfs(sr, sc, image, inicolor, delrow, delcol, ans, color);
+        return ans;
+    }
+};
