@@ -1,0 +1,83 @@
+class cluster{
+ public:   
+    set<pair<int, int>>c; //set of all cells that are contaminated.
+    set<pair<int, int>>uc; //set of all cells that are uncontaminated.
+    int wcnt = 0; // wall required to contain this structure;
+};
+class Solution {
+public:
+   void dfs(int row, int col, vector<vector<int>>&grid, vector<vector<int>>&vis, cluster &cl){
+          if(grid[row][col] == 0){
+          cl.wcnt++;
+          cl.uc.insert({row, col});
+        return;
+       }   
+      int n = grid.size();    
+       int m = grid[0].size();   
+  int delrow[] = {-1, 0, +1, 0};    
+   int delcol[] = {0, +1, 0, -1};    
+   cl.c.insert({row, col});   
+   vis[row][col] = 1;   
+      
+     for(int i=0; i<4; i++){
+         int nrow = row + delrow[i];  
+         int ncol = col + delcol[i];  
+          
+        if(nrow>=0 && nrow<n && ncol>=0 && ncol<m && !vis[nrow][ncol] && grid[nrow][ncol] != -1){
+         dfs(nrow, ncol, grid, vis, cl);   
+        }   
+          
+       }
+   }  
+ 
+    int containVirus(vector<vector<int>>& grid) {
+    int n = grid.size();
+    int m = grid[0].size();    
+    int ans = 0;    
+        
+        while(1){
+            vector<vector<int>>vis(n, vector<int>(m,0));
+  //comparator for pq to sort it according to size of uncontaminated cell in cluster.
+         auto comp = [](const cluster &A, const cluster &B){
+            return A.uc.size()<B.uc.size();
+       };
+            
+    priority_queue<cluster, vector<cluster>, decltype(comp)>pq(comp);            
+            
+    //find contaminated cell        
+            
+           for(int i=0; i<n; i++){
+               for(int j=0; j<m; j++){
+                   
+                if(grid[i][j] == 1 && vis[i][j] == 0){
+                   //create a cluster
+                    cluster c;
+                  dfs(i, j, grid, vis, c);
+              // dfs(grid,i, j, vis, c);
+                    pq.push(c);
+                }       
+               }
+           } 
+            
+     if(pq.size()==0)break;       
+          //take the largest cluster and mark -1(or u can say add boundary)  
+     cluster k = pq.top();
+     pq.pop();       
+      for(auto x: k.c){
+          grid[x.first][x.second] = -1;
+      } 
+     ans = ans + k.wcnt;       
+            
+       //for reamining elements mark them 1 as they have been contaminated     
+            while(!pq.empty()){
+                cluster k = pq.top();
+                pq.pop();
+                
+                for(auto x: k.uc){
+                    grid[x.first][x.second] = 1;
+                }
+            }
+        }
+        return ans;
+    }
+};
