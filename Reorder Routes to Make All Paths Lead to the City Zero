@@ -1,0 +1,35 @@
+class Solution {
+public:
+    int OUTGOING = 1;
+    int INCOMING = 0;
+    int minReorder(int n, vector<vector<int>>& connections) {
+      //0 se jane wale node ko count kro.......(outgoing wale pe cnt badega)
+        //incoming node ka kuch mat kro..........(incoming wale pe count nhi badega)
+      vector<vector<pair<int, bool>>>adj(n);
+      for(auto it:connections){
+          adj[it[0]].push_back({it[1], OUTGOING});
+          adj[it[1]].push_back({it[0], INCOMING});
+      }   
+        
+     queue<int>q;   
+     vector<int>vis(n,0);   
+     q.push(0);   
+     vis[0] = 1;   
+     int cnt  = 0;   
+      while(!q.empty()){
+       int node = q.front();                
+       q.pop();
+           
+         for(auto it:adj[node]){
+             if(!vis[it.first]){
+                 if(it.second == OUTGOING){
+                     cnt++;
+                 }
+                 q.push(it.first);
+                 vis[it.first] = 1;
+             }
+         }  
+      }  
+    return cnt;
+    }
+};
