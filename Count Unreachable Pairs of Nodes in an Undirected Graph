@@ -1,0 +1,42 @@
+class Solution {
+public:
+    int bfs(int node, vector<vector<int>>&adj, vector<int>&vis){
+     vis[node] = 1;
+     queue<int>q;   
+     q.push(node);   
+      int cnt  = 1;  
+     
+        while(!q.empty()){
+            int node = q.front();
+            q.pop();
+            
+            for(auto nbr:adj[node]){
+                if(!vis[nbr]){
+                    cnt++;
+                    vis[nbr] = 1;
+                    q.push(nbr);
+                }
+            }
+        }
+     return cnt;   
+    }
+    
+    long long countPairs(int n, vector<vector<int>>& edges) {
+        vector<vector<int>>adj(n);
+        for(auto it:edges){
+            adj[it[0]].push_back(it[1]);
+            adj[it[1]].push_back(it[0]);
+        }
+        vector<int>vis(n, 0);
+           long long ans  = 0, countNodeVisited = 0;
+           long long totalNodesVisited = n;
+        for(int i=0; i<n; i++){
+          if(!vis[i]){  
+           countNodeVisited = bfs(i, adj, vis);
+           ans = ans + (countNodeVisited*( totalNodesVisited - countNodeVisited));  
+           totalNodesVisited -= countNodeVisited; 
+          } 
+       }
+       return ans;
+    }
+};
