@@ -1,0 +1,72 @@
+class Solution {
+public:
+     vector<int>vis;
+    int ans = -1;
+  void dfs(int node, vector<int>adj[], vector<int>&vis, int cnt){
+     vis[node] = 1;   
+     cnt++;
+        
+      ans = max(cnt,ans);
+      
+      for(auto it:adj[node]){
+          if(!vis[it]){
+              dfs(it, adj, vis, cnt);
+          }
+      }
+    }
+    
+    int longestCycle(vector<int>& edges) {
+     
+        //topo sort because nodes which will form cycle will donot have indegree ==0
+        int n = edges.size();
+     vis = vector<int>(n, 0);
+        
+        vector<int>indegree(n, 0);
+          queue<int>q;
+        
+        vector<int>adj[n];
+        for(int i=0; i<edges.size(); i++){
+            if(edges[i]!=-1){adj[i].push_back(edges[i]);}
+        }
+    
+        
+        for(int i=0; i<n; i++){
+            for(auto it:adj[i]){
+                indegree[it]++;
+            }
+        }
+        int cnt1= 0;
+       for(int i=0; i<n; i++){
+          if(indegree[i] == 0){
+              q.push(i);
+              vis[i] = 1;
+          }   
+       } 
+        
+        while(!q.empty()){
+            int node = q.front();
+            q.pop();
+            
+           for(auto it:adj[node]){
+              indegree[it]--;
+               if(indegree[it]==0){
+                   q.push(it);
+                   vis[it] = 1;
+                   cnt1++;
+           }
+           }
+        }
+        
+        if(cnt1==n)return ans;
+        
+        
+        //cycle detection to calculate length of cycle...
+        for(int i=0; i<n; i++){
+           int cnt = 0;
+            if(!vis[i]  && indegree[i]){
+                dfs(i, adj, vis, cnt);
+            }
+        }
+        return ans;
+    }
+};
