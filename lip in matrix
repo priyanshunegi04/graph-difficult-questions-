@@ -1,0 +1,49 @@
+class Solution {
+public:
+int solve(vector<vector<int>>&m, int row, int col, vector<vector<int>>&mem){
+  
+    if(row<0 || col<0 || row >= m.size() || col >= m[0].size()){
+        return 0;
+    }
+    
+    if(mem[row][col] >0)return mem[row][col];
+    int curr = 1;
+    
+    if(row+1<m.size() && row+1>=0 && m[row+1][col] > m[row][col]){
+        curr = max(curr, 1+solve(m, row+1, col, mem));
+    }
+    
+    if( row-1 <m.size() && row-1>=0 && m[row-1][col] > m[row][col]){
+        curr = max(curr, 1+ solve(m, row-1, col, mem));
+    }
+    
+    if(col +1 < m[0].size() && col+1 >=0 && m[row][col+1] > m[row][col]){
+        curr = max(curr, 1 + solve(m, row, col+1, mem));
+    }
+    
+     
+    if(col -1 < m[0].size() && col-1 >=0 && m[row][col-1] > m[row][col]){
+        curr = max(curr, 1 + solve(m, row, col-1, mem));
+    }
+    
+    mem[row][col] = curr;
+    return curr;
+    
+        
+   }
+    
+    int longestIncreasingPath(vector<vector<int>>& m) {
+        int n = m.size();
+        int mi = m[0].size();
+        
+        vector<vector<int>>mem(n, vector<int>(mi,0));
+        
+        int ans = 0;
+        for(int i=0; i<n; i++){
+            for(int j=0; j<mi; j++){
+                ans = max(ans, solve(m, i, j, mem));
+            }
+        }    
+        return ans;
+    }
+};
